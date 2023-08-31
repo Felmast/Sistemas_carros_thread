@@ -88,7 +88,7 @@ int[] get_path(FloydData fd, int node1, int node2){
   path[pos] = node1;
   
   int c = 0;
-  for(int i = fd.table.length - pos + 1; c < fd.table.length; c++){
+  for(int i = fd.table.length - (fd.table.length - pos + 1); c < fd.table.length; c++){
     i++;
     if(i < fd.table.length){
       path[c] = path[i];
