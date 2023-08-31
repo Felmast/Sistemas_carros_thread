@@ -28,11 +28,13 @@ void setup(){
 
 FloydData floyd(int[][] d0){
   int[][][] tables = new int[d0.length][d0.length][d0.length];
+  int[][] p_table = new int[d0.length][d0.length];
   
   for(int i=1; i < d0.length; i++){
     for(int j=0; j < d0.length; j++){
       for(int k=0; k < d0.length; k++){
         if(i == 1){
+          p_table[j][k] = -1;
           tables[0][j][k] = d0[j][k];
         }
         if(j == i || k == i)
@@ -43,7 +45,7 @@ FloydData floyd(int[][] d0){
         {
           tables[i][j][k] = min(tables[i-1][j][k], tables[i-1][i][k] + tables[i-1][j][i]);
           if(tables[i][j][k] != tables[i-1][j][k]){
-            tables[0][j][k] = i;
+            p_table[j][k] = i;
           }
         }
       }
@@ -52,7 +54,7 @@ FloydData floyd(int[][] d0){
   
   FloydData fd = new FloydData();
   fd.table = tables[3];
-  fd.path = tables[0];
+  fd.path = p_table;
   return fd;
 }
 
