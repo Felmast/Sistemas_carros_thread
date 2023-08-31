@@ -32,14 +32,17 @@ FloydData floyd(int[][] d0){
   for(int i=1; i < d0.length; i++){
     for(int j=0; j < d0.length; j++){
       for(int k=0; k < d0.length; k++){
+        if(i == 1){
+          tables[0][j][k] = d0[j][k];
+        }
         if(j == i || k == i)
         {
-          tables[i][j][k] = i==1? d0[j][k] : tables[i-1][j][k];
+          tables[i][j][k] = tables[i-1][j][k];
         }
         else
         {
-          tables[i][j][k] = min(i==1? d0[j][k] : tables[i-1][j][k], (i==1? d0[i][k] : tables[i-1][i][k]) + (i==1? d0[j][i] : tables[i-1][j][i]));
-          if(tables[i][j][k] != (i==1? d0[j][k] : tables[i-1][j][k])){
+          tables[i][j][k] = min(tables[i-1][j][k], tables[i-1][i][k] + tables[i-1][j][i]);
+          if(tables[i][j][k] != tables[i-1][j][k]){
             tables[0][j][k] = i;
           }
         }
