@@ -1,3 +1,15 @@
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Arrays;
+import java.util.Random;
+
+
+
+int n;
+float[] alphas;
+
 class FloydData{
   int[][] table;
   int[][] path;
@@ -5,6 +17,8 @@ class FloydData{
 
 void setup(){
   //EXAMPLE
+  n = 8;
+  alphas = new float[]{0.5, 1, 0.25, 2, 0.5, 1, 0.25, 2};
   int[][] table = new int[8][8];
   for(int i = 0; i < table.length; i++){
     for(int j = 0; j < table.length; j++){
@@ -26,8 +40,40 @@ void setup(){
   println("\n\nPath from 0 to 6:");
   printArray(get_path(fd,0,6));
   
-  noLoop();
-  exit();
+  
+  //noLoop();
+  //exit();
+  
+  generateVehicles(0, fd);
+}
+
+void generateVehicles(int node, FloydData fd) {
+  print("entrando");
+  //function that receives the index of a node and generates the vehicles from it
+  float alpha = alphas[node];
+  List<Long> vehicles = new ArrayList<>();
+  long startTime = System.currentTimeMillis();
+  Timer timer = new Timer();
+  Random random = new Random();
+  
+  timer.scheduleAtFixedRate(new TimerTask() {
+     @Override
+     public void run() {
+       
+       vehicles.add(System.currentTimeMillis());
+       int destinationNode = random.nextInt(n);
+       while (destinationNode == node) {
+         destinationNode = random.nextInt(n);
+       }
+       //que se hace con el path???
+       printArray(get_path(fd, node, destinationNode));
+       
+       //it stops after 10 seconds
+       if (System.currentTimeMillis() - startTime >= 10000) {
+         timer.cancel();
+       }
+     }
+  }, 0, (long) (1000/alpha));
 }
 
 FloydData floyd(int[][] d0){
