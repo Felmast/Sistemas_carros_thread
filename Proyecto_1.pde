@@ -5,8 +5,9 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.Random;
 
-
-
+board table;
+List<node> nodes;
+boolean allowMP = true;
 int n;
 float[] alphas;
 
@@ -16,6 +17,10 @@ class FloydData{
 }
 
 void setup(){
+  size(1250,950);
+  background(#E5E5E5);
+  table = new board();
+  nodes = new ArrayList<node>();
   //EXAMPLE
   n = 8;
   alphas = new float[]{0.5, 1, 0.25, 2, 0.5, 1, 0.25, 2};
@@ -169,5 +174,30 @@ void printTable(int[][] table){
 }
 
 void draw(){
+  table.drawSimuBoard();
+  table.drawBottonsText();
+  for(node node:nodes){
+    node.drawNodo(); 
+  }
+  for(node node:nodes){
+    node.option(); 
+  }
+}
 
+void mouseDragged() {
+    for(node node:nodes)  
+       node.mouseDragged();
+}
+
+void mousePressed() {
+  if(allowMP){
+    table.mousePressed();
+    for(node node:nodes)
+      node.mousePressed(); 
+  }
+  print("x: " + mouseX + " y: " + mouseY + "\n");
+}
+
+void mouseReleased() {
+  allowMP = true;
 }
