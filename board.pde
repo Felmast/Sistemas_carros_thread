@@ -18,9 +18,17 @@ class board {
       rect(950,855,250,50); //tart simulation
       fill(0); //Color black
       textSize(20);
-      text("Simulation time:", 60,888);
-      text("Number of cars:",360,888);
-      text("Average speed:",665,888);
+      //text("Simulation time:", 60,888);
+      //text("Number of cars:",360,888);
+      //text("Average speed:",665,888);
+      
+      long time =  millis() - startTime;
+      long mins = time / 60000;
+      long secs = (time - mins * 60000) / 1000;
+       text("Simulation time: " +mins + ":" + String.format("%02d", secs), 60,888);
+       text("Number of cars: " + cars.size(),360,888);
+       text("Average speed: " + String.format("%.2f",averageSpeed()),665,888);
+      
       textSize(30);
       text("Start Simulation",975,890);
       fill(255); //Color white
