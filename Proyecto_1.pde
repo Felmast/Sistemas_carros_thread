@@ -35,41 +35,8 @@ void setup(){
   
   
   //EXAMPLE
-  n = 8;
+  ejemploSimulacion();
   
-  for(int i = 0; i < n; i++){
-    nodesState.add(new ReentrantLock());
-  }
-  
-  alphas = new float[]{0.75, 1, 0.25, 2, 0.5, 1, 0.25, 2};
-  int[][] table = new int[8][8];
-  for(int i = 0; i < table.length; i++){
-    for(int j = 0; j < table.length; j++){
-      table[i][j] = 99999;
-      if(i == j)
-        table[i][j] = 0;
-    }
-  }
-  table[0][3] = 30;
-  table[3][6] = 40;
-  
-  FloydData fd = floyd(table);
-  
-  println("\nResult Table:");
-  printTable(fd.table);
-  println("\nPath:");
-  printTable(fd.path);
-  
-  println("\n\nPath from 0 to 6:");
-  printArray(get_path(fd,0,6));
-  
-  
-  inSimulation = true;
-  
-  
-  //Needs to be done for every node, on "start simulation"
-  VehicleGenerator node0 = new VehicleGenerator(0, alphas[0], fd);
-  node0.start();
 }
 
 void draw(){
@@ -124,4 +91,48 @@ void printTable(int[][] table){
       }
       println(" ] ");
     }
+}
+
+void ejemploSimulacion() {
+  //crear los nodos
+  n = 8;
+  
+  for(int i = 0; i < n; i++){
+    nodesState.add(new ReentrantLock());
+  }
+  
+  //crear los alphas
+  alphas = new float[]{0.75, 1, 0.25, 2, 0.5, 1, 0.25, 2};
+  
+  //crear rutas
+  int[][] table = new int[8][8];
+  for(int i = 0; i < table.length; i++){
+    for(int j = 0; j < table.length; j++){
+      table[i][j] = 99999;
+      if(i == j)
+        table[i][j] = 0;
+    }
+  }
+  table[0][3] = 30;
+  table[3][6] = 40;
+  
+  FloydData fd = floyd(table);
+  
+  //println("\nResult Table:");
+  //printTable(fd.table);
+  //println("\nPath:");
+  //printTable(fd.path);
+  
+  //println("\n\nPath from 0 to 6:");
+  //printArray(get_path(fd,0,6));
+  
+  
+  inSimulation = true;
+  print("entrando");
+  //por cada nodo generar carritos
+  for (int i = 0; i < nodes.size(); i++) {
+    VehicleGenerator node = new VehicleGenerator(i, alphas[i], fd);
+    print("entrando");
+    node.run();
+  }
 }
