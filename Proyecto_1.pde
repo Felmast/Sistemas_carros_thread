@@ -11,122 +11,127 @@ import java.util.concurrent.locks.ReentrantLock;
 
 long startTime;
 boolean inSimulation = false; // Set to true on "Start Simulation"
-board table;
-List<node> nodes;
 List<ReentrantLock> nodesState;
 boolean allowMP = true;
 int n;
-float[] alphas;
+float[] alphas; //meter creation rate
 
-class FloydData{
+int[][] baseTable; //aristas
+
+//Interface
+PImage img;
+board table;
+List<node> nodes;
+List<path> paths;
+boolean locked = false;
+boolean simulationOn = false;
+
+//baseTable[p.indiceNodo1][p.indiceNodo2] = p.value;
+//baseTable[p.indiceNodo2][p.indiceNodo1] = p.value;
+
+
+class FloydData {
   int[][] table;
-  int[][] baseTable;
+  int[][] baseTable; //aristas
   int[][] path;
 }
 
-void setup(){
-  size(1250,950,FX2D);
+void setup() {
+  img = loadImage("1.jpg");
+  size(1250, 950);
   background(#E5E5E5);
   table = new board();
   nodes = new ArrayList<node>();
+  paths = new ArrayList<path>();
   nodesState = new ArrayList();
   startTime = millis();
-  
-  
-  
+
+
+
   //EXAMPLE
-  ejemploSimulacion();
-  
+//  ejemploSimulacion();
 }
 
-void draw(){
-  table.drawSimuBoard();
-  table.drawBottonsText();
-  for(node node:nodes){
-    node.drawNodo(); 
-  }
-  for(node node:nodes){
-    node.option(); 
-  }
-  //println("Average Speed: " + averageSpeed());
-  
-}
 
-void mouseDragged() {
-    for(node node:nodes)  
-       node.mouseDragged();
+void draw() {
+  image(img, 0, 0, width, height);
+  table.draw();
 }
 
 void mousePressed() {
-  if(allowMP){
-    table.mousePressed();
-    for(node node:nodes)
-      node.mousePressed(); 
-  }
+  table.mousePressed();
   print("x: " + mouseX + " y: " + mouseY + "\n");
 }
 
+
 void mouseReleased() {
-  allowMP = true;
+  locked = false;
+}
+
+void mouseMoved() {
+  table.mouseMoved();
+}
+
+void keyPressed() {
+  table.keyPressed();
 }
 
 
-void printArray(int[] array){
+void printArray(int[] array) {
+  print("[ ");
+  for (int k=0; k < array.length; k++) {
+    print(array[k]);
+    if (k != array.length-1)
+      print(" | ");
+  }
+  println(" ] ");
+}
+
+void printTable(int[][] table) {
+  for (int j=0; j <table.length; j++) {
     print("[ ");
-    for(int k=0; k < array.length; k++){
-        print(array[k]);
-        if(k != array.length-1)
-          print(" | ");
+    for (int k=0; k < table.length; k++) {
+      print(table[j][k]);
+      if (k != table.length-1)
+        print(" | ");
     }
     println(" ] ");
+  }
 }
 
-void printTable(int[][] table){
-  for(int j=0; j <table.length; j++){
-      print("[ ");
-      for(int k=0; k < table.length; k++){
-          print(table[j][k]);
-          if(k != table.length-1)
-            print(" | ");
-      }
-      println(" ] ");
-    }
-}
-
-void ejemploSimulacion() {
+void startSimulation() {
   //crear los nodos
   n = 8;
-  
-  for(int i = 0; i < n; i++){
+
+  for (int i = 0; i < n; i++) {
     nodesState.add(new ReentrantLock());
   }
-  
+
   //crear los alphas
-  alphas = new float[]{0.75, 1, 0.25, 2, 0.5, 1, 0.25, 2};
-  
-  //crear rutas
-  int[][] table = new int[8][8];
-  for(int i = 0; i < table.length; i++){
-    for(int j = 0; j < table.length; j++){
-      table[i][j] = 99999;
-      if(i == j)
-        table[i][j] = 0;
-    }
+  alphas = new float[nodes.size()];
+  for(int i = 0; i< nodes.size(); i++){
+    alphas[i] = nodes.get(i).creationRate;
   }
-  table[0][3] = 30;
-  table[3][6] = 40;
   
-  FloydData fd = floyd(table);
+  printArray(alphas);
+  baseTable = new int[nodes.size()][nodes.size()];
   
+  for(int i = 0; i<paths.size(); i++){
+    baseTable[paths.get(i).indiceNodo1][paths.get(i).indiceNodo2] = paths.get(i).value;
+    baseTable[paths.get(i).indiceNodo2][paths.get(i).indiceNodo1] = paths.get(i).value;
+  }
+  printTable(baseTable);
+  FloydData fd = floyd(baseTable);
+
   //println("\nResult Table:");
   //printTable(fd.table);
   //println("\nPath:");
   //printTable(fd.path);
-  
+
   //println("\n\nPath from 0 to 6:");
   //printArray(get_path(fd,0,6));
-  
-  
+
+
   inSimulation = true;
   print("entrando");
   //por cada nodo generar carritos
