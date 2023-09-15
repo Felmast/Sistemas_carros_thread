@@ -55,7 +55,7 @@ class Car {
   void nextNode() {
     currNodeIndex++;
     
-    if (currNodeIndex+1 >= path.length || path[currNodeIndex] == -1){// || path[currNodeIndex+1] == -1) {
+    if (currNodeIndex+1 >= path.length || path[currNodeIndex] == -1 || path[currNodeIndex+1] == -1) {
       forceEnd();
       return;
     }
