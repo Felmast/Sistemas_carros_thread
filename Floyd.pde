@@ -1,9 +1,12 @@
 FloydData floyd(int[][] d0) {
   int[][][] tables = new int[d0.length][d0.length][d0.length];
   int[][] p_table = new int[d0.length][d0.length];
+  pathsCache = new int[d0.length][d0.length][d0.length];
+  pathsCache[0][0] = null;
 
   for (int i=0; i < d0.length; i++) {
     for (int j=0; j < d0.length; j++) {
+      pathsCache[i][j] = null;
       for (int k=0; k < d0.length; k++) {
         if (i == 0) {
           p_table[j][k] = -1;
@@ -37,48 +40,41 @@ FloydData floyd(int[][] d0) {
   return fd;
 }
 
+int[][][] pathsCache;
 int[] get_path(FloydData fd, int node1, int node2) {
-  int length = fd.table.length+2;
+  if(pathsCache[node1][node2] != null){
+    return pathsCache[node1][node2];
+  }
+  int origNode2 = node2;
   
   if(fd.table.length == 1){
     int[] p = {0};
     return p;
   }
-  /*if(fd.table.length == 2){
-    int[] p = {node1, fd.path[node1][node2], node2};
-    return p;
-  }*/
   
   int[] path = new int[fd.table.length];
   int pos = fd.table.length-1;
   path[0] = -1;
 
   path[pos] = node2;
-  //print("p:"+pos+", ");
   pos--;
-  if (fd.path[node1][node2] == -1 || fd.path[node1][node2] > 99999) {
-    path[pos--] = -1;
-    //print("n:"+pos+", ");
+  if (fd.path[node1][node2] == -1) {
+    path[pos] = -1;
   } else {
     node2 = fd.path[node1][node2];
-    while (node2 != node1) {
-      //print("s:"+pos+", ");
+    while (node2 != node1 && node2 != -1) {
       path[pos--] = node2;
       node2 = fd.path[node1][node2];
     }
+    path[pos] = node1;
   }
-  //print("f:"+pos+"\n");
-  path[pos] = node1;
 
   int c = 0;
-  for (int i = fd.table.length - (fd.table.length - pos + 1); c < fd.table.length; c++) {
-    i++;
-    if (i < fd.table.length) {
-      path[c] = path[i];
-    } else {
-      path[c] = -1;
-    }
+  int[] newPath  = new int[fd.table.length];
+  for (int i = pos; i < fd.table.length; i++) {
+    newPath[c++] = path[i];
   }
-
-  return path;
+  
+  pathsCache[node1][origNode2] = newPath;
+  return newPath;
 }

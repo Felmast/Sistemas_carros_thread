@@ -17,23 +17,26 @@ class Car {
   Car() {
   }
 
-  Car(int startNode, FloydData fd) {
+  Car(int startNode, FloydData fd, List<int[][]> validPaths) {
     int nodes = fd.table.length;
     this.fd = fd;
 
     Random random = new Random();
     end = startNode;
-    while (fd.table[startNode][end] == 0 || fd.table[startNode][end] == 99999) {
-      end = random.nextInt(nodes);
-      while (end == startNode) {
-        end = random.nextInt(nodes);
-      }
+    
+    if(validPaths.size() == 0){
+      forceEnd();
+      return;
     }
-    path = get_path(fd, startNode, end);
-    //print("Chosen path: ");
-    //printArray(path);
+    
+    int[][] selectedPath = validPaths.get(random.nextInt(validPaths.size()));
+    
+    
+    path = selectedPath[1];
+    end = selectedPath[0][0];
+    
     nextNode();
-    println("Path: ");printArray(path);
+    println("Chosen Path: ");printArray(path);
   }
 
   void advance() {
@@ -107,6 +110,18 @@ class VehicleGenerator extends Thread {
   void generateVehicles(int node, float alpha, FloydData fd) {
     print("entrando");
     //function that receives the index of a node and generates the vehicles from it
+    
+    List<int[][]> validPaths = new ArrayList();
+    for(int i=0; i<fd.table.length; i++){
+      if(i != node && fd.table[node][i] != -1){
+        int[][] t = {{i},get_path(fd, node, i)};
+         validPaths.add(t);
+      }
+    }
+    
+    if(validPaths.size() == 0){
+      return;
+    }
 
     long startTime = System.currentTimeMillis();
     Timer timer = new Timer();
@@ -117,7 +132,7 @@ class VehicleGenerator extends Thread {
 
         carListLock.lock();
         try {
-          cars.add(new Car(node, fd));
+          cars.add(new Car(node, fd, validPaths));
           thread("moveCar");
         }
         finally {
