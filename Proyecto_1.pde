@@ -115,7 +115,7 @@ void startSimulation() {
   
   for(int i = 0; i<nodes.size(); i++){
      for(int j = 0; j<nodes.size(); j++){
-      baseTable[i][j] = -1;
+      baseTable[i][j] = 99999;
       if(i == j)
          baseTable[i][j] = 0;
     }
@@ -128,13 +128,13 @@ void startSimulation() {
   printTable(baseTable);
   FloydData fd = floyd(baseTable);
   startTime = millis();
-  //println("\nResult Table:");
-  //printTable(fd.table);
-  //println("\nPath:");
-  //printTable(fd.path);
+  println("\nResult Table:");
+  printTable(fd.table);
+  println("\nPath:");
+  printTable(fd.path);
 
-  //println("\n\nPath from 0 to 6:");
-  printArray(get_path(fd,0,1));
+  //println("\n\nPath from 0 to 2:");
+  //printArray(get_path(fd,0,2));
 
 
   inSimulation = true;

@@ -55,7 +55,7 @@ class Car {
   void nextNode() {
     currNodeIndex++;
     
-    if (currNodeIndex+1 >= path.length || path[currNodeIndex] == -1 || path[currNodeIndex+1] == -1) {
+    if (currNodeIndex+1 >= path.length || path[currNodeIndex] == -1){// || path[currNodeIndex+1] == -1) {
       forceEnd();
       return;
     }
@@ -65,6 +65,7 @@ class Car {
   }
 
   void forceEnd() {
+    currNodeIndex = currNodeIndex >= path.length? path.length-1 : currNodeIndex;
     path[currNodeIndex] = end;
   }
 
@@ -108,18 +109,17 @@ class VehicleGenerator extends Thread {
 
 
   void generateVehicles(int node, float alpha, FloydData fd) {
-    print("entrando");
     //function that receives the index of a node and generates the vehicles from it
     
     List<int[][]> validPaths = new ArrayList();
     for(int i=0; i<fd.table.length; i++){
-      if(i != node && fd.table[node][i] != -1){
+      if(i != node && fd.path[node][i] != -1){
         int[][] t = {{i},get_path(fd, node, i)};
          validPaths.add(t);
       }
     }
     
-    if(validPaths.size() == 0){
+    if(alpha <= 0 || validPaths.size() == 0){
       return;
     }
 
@@ -133,6 +133,7 @@ class VehicleGenerator extends Thread {
         carListLock.lock();
         try {
           cars.add(new Car(node, fd, validPaths));
+           thread("moveCar");
         }
         finally {
           carListLock.unlock();
@@ -165,9 +166,8 @@ void moveCar() {
 
   car.setDeltaTime(1.0/60.0); // 1 / frames per second
 
-  while (car != null && !car.atEnd()) {
+  while (car != null && inSimulation && !car.atEnd()) {
     car.advance();
-
     if (car.atDistanceEnd()) {
       //Here goes the node lock
       car.nextNode();
@@ -187,7 +187,7 @@ void moveCar() {
         }
       }
     }
-
+    
     if (car.atEnd()) {
       car.stop();
       carListLock.lock();
@@ -204,4 +204,16 @@ void moveCar() {
     //println("moving... "+String.format("%.2f",car.getTravelledPercentage())+"%");
     delay(frameMillis); //Cars don't move each frame because they are a thread, so it needs tobe delayed to an arbitrary number of frames/second
   }
+  
+  if (car != null && !inSimulation) {
+      car.stop();
+      carListLock.lock();
+      try {
+        cars.remove(car);
+      }
+      finally {
+        carListLock.unlock();
+      }
+      car = null;
+    }
 }
