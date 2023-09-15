@@ -29,11 +29,11 @@ class Car {
         end = random.nextInt(nodes);
       }
     }
-    print(end+" ");
     path = get_path(fd, startNode, end);
     //print("Chosen path: ");
     //printArray(path);
     nextNode();
+    println("Path: ");printArray(path);
   }
 
   void advance() {
@@ -51,8 +51,8 @@ class Car {
 
   void nextNode() {
     currNodeIndex++;
-
-    if (path[currNodeIndex] == -1 || path[currNodeIndex+1] == -1) {
+    
+    if (currNodeIndex+1 >= path.length || path[currNodeIndex] == -1 || path[currNodeIndex+1] == -1) {
       forceEnd();
       return;
     }
@@ -118,7 +118,6 @@ class VehicleGenerator extends Thread {
         carListLock.lock();
         try {
           cars.add(new Car(node, fd));
-          moveCar();
           thread("moveCar");
         }
         finally {
@@ -152,7 +151,7 @@ void moveCar() {
 
   car.setDeltaTime(1.0/60.0); // 1 / frames per second
 
-  while (!car.atEnd()) {
+  while (car != null && !car.atEnd()) {
     car.advance();
 
     if (car.atDistanceEnd()) {

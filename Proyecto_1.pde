@@ -116,6 +116,14 @@ void startSimulation() {
   printArray(alphas);
   baseTable = new int[nodes.size()][nodes.size()];
   
+  for(int i = 0; i<nodes.size(); i++){
+     for(int j = 0; j<nodes.size(); j++){
+      baseTable[i][j] = -1;
+      if(i == j)
+         baseTable[i][j] = 0;
+    }
+  }
+  
   for(int i = 0; i<paths.size(); i++){
     baseTable[paths.get(i).indiceNodo1][paths.get(i).indiceNodo2] = paths.get(i).value;
     baseTable[paths.get(i).indiceNodo2][paths.get(i).indiceNodo1] = paths.get(i).value;
@@ -123,13 +131,13 @@ void startSimulation() {
   printTable(baseTable);
   FloydData fd = floyd(baseTable);
 
-  //println("\nResult Table:");
-  //printTable(fd.table);
-  //println("\nPath:");
-  //printTable(fd.path);
+  println("\nResult Table:");
+  printTable(fd.table);
+  println("\nPath:");
+  printTable(fd.path);
 
   //println("\n\nPath from 0 to 6:");
-  //printArray(get_path(fd,0,6));
+  printArray(get_path(fd,0,1));
 
 
   inSimulation = true;

@@ -38,20 +38,36 @@ FloydData floyd(int[][] d0) {
 }
 
 int[] get_path(FloydData fd, int node1, int node2) {
+  int length = fd.table.length+2;
+  
+  if(fd.table.length == 1){
+    int[] p = {0};
+    return p;
+  }
+  /*if(fd.table.length == 2){
+    int[] p = {node1, fd.path[node1][node2], node2};
+    return p;
+  }*/
+  
   int[] path = new int[fd.table.length];
   int pos = fd.table.length-1;
   path[0] = -1;
 
-  path[pos--] = node2;
+  path[pos] = node2;
+  //print("p:"+pos+", ");
+  pos--;
   if (fd.path[node1][node2] == -1 || fd.path[node1][node2] > 99999) {
     path[pos--] = -1;
+    //print("n:"+pos+", ");
   } else {
     node2 = fd.path[node1][node2];
     while (node2 != node1) {
+      //print("s:"+pos+", ");
       path[pos--] = node2;
       node2 = fd.path[node1][node2];
     }
   }
+  //print("f:"+pos+"\n");
   path[pos] = node1;
 
   int c = 0;
