@@ -60,9 +60,17 @@ class board {
     fill(0); //Color black
     textSize(20);
 
-    long time =  millis() - startTime;
-    long mins = time / 60000;
-    long secs = (time - mins * 60000) / 1000;
+    long mins;
+    long secs;
+    if(inSimulation){
+      actualTimer = millis() - startTime;
+      long time =  millis() - startTime;
+      mins = time / 60000;
+      secs = (time - mins * 60000) / 1000;
+    } else {
+      mins = actualTimer / 60000;
+      secs = (actualTimer - mins * 60000) / 1000;
+    }
     text("Simulation time: " +mins + ":" + String.format("%02d", secs), 60, 888);
     text("Number of cars: " + cars.size(), 360, 888);
     text("Average speed: " + String.format("%.2f", averageSpeed()), 665, 888);
@@ -170,7 +178,9 @@ class board {
   void mousePressed() {
     if (mouseX>=950 && mouseX <=1200 && mouseY>=855 && mouseY<=955) {
       simulationOn = !simulationOn;
-      startSimulation();
+      inSimulation = !inSimulation;
+      if(simulationOn)
+       startSimulation();     
     }
     if (!simulationOn && mouseX>=50 && mouseX <=150 && mouseY>=52 && mouseY<=152) { //Select create tool
       currentTool = 1;

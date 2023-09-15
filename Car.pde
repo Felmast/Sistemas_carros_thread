@@ -133,7 +133,6 @@ class VehicleGenerator extends Thread {
         carListLock.lock();
         try {
           cars.add(new Car(node, fd, validPaths));
-          thread("moveCar");
         }
         finally {
           carListLock.unlock();

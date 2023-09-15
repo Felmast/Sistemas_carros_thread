@@ -10,6 +10,7 @@ import java.util.Random;
 import java.util.concurrent.locks.ReentrantLock;
 
 long startTime;
+long actualTimer;
 boolean inSimulation = false; // Set to true on "Start Simulation"
 List<ReentrantLock> nodesState;
 boolean allowMP = true;
@@ -44,10 +45,6 @@ void setup() {
   nodes = new ArrayList<node>();
   paths = new ArrayList<path>();
   nodesState = new ArrayList();
-  startTime = millis();
-
-
-
   //EXAMPLE
 //  ejemploSimulacion();
 }
@@ -60,7 +57,7 @@ void draw() {
 
 void mousePressed() {
   table.mousePressed();
-  print("x: " + mouseX + " y: " + mouseY + "\n");
+  //print("x: " + mouseX + " y: " + mouseY + "\n");
 }
 
 
@@ -130,22 +127,22 @@ void startSimulation() {
   }
   printTable(baseTable);
   FloydData fd = floyd(baseTable);
-
-  println("\nResult Table:");
-  printTable(fd.table);
-  println("\nPath:");
-  printTable(fd.path);
+  startTime = millis();
+  //println("\nResult Table:");
+  //printTable(fd.table);
+  //println("\nPath:");
+  //printTable(fd.path);
 
   //println("\n\nPath from 0 to 6:");
   printArray(get_path(fd,0,1));
 
 
   inSimulation = true;
-  print("entrando");
+ // print("entrando");
   //por cada nodo generar carritos
   for (int i = 0; i < nodes.size(); i++) {
     VehicleGenerator node = new VehicleGenerator(i, alphas[i], fd);
-    print("entrando");
+  //  print("entrando");
     node.run();
   }
 }
