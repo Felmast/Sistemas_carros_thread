@@ -1,6 +1,10 @@
 ArrayList<Car> cars = new ArrayList();
 
 class Car {
+  int x_node1;
+  int y_node1;
+  int x_node2;
+  int y_node2;
   float distanceBetween = 0;
   float distanceTravelled = 0;
   int[] path;
@@ -17,26 +21,38 @@ class Car {
   Car() {
   }
 
+  void getCoordinates() {
+    if (!atEnd()) {
+      x_node1 = nodes.get(path[currNodeIndex]).x;
+      y_node1 = nodes.get(path[currNodeIndex]).y;
+      x_node2 = nodes.get(path[currNodeIndex+1]).x;
+      y_node2 = nodes.get(path[currNodeIndex+1]).y;
+    }
+  }
+
   Car(int startNode, FloydData fd, List<int[][]> validPaths) {
     int nodes = fd.table.length;
     this.fd = fd;
 
     Random random = new Random();
     end = startNode;
-    
-    if(validPaths.size() == 0){
+
+    if (validPaths.size() == 0) {
       forceEnd();
       return;
     }
-    
+
     int[][] selectedPath = validPaths.get(random.nextInt(validPaths.size()));
-    
-    
+
+
     path = selectedPath[1];
     end = selectedPath[0][0];
-    
+
     nextNode();
-    println("Chosen Path: ");printArray(path);
+    getCoordinates();
+
+    println("Chosen Path: ");
+    printArray(path);
   }
 
   void advance() {
@@ -54,7 +70,7 @@ class Car {
 
   void nextNode() {
     currNodeIndex++;
-    
+
     if (currNodeIndex+1 >= path.length || path[currNodeIndex] == -1 || path[currNodeIndex+1] == -1) {
       forceEnd();
       return;
@@ -110,16 +126,16 @@ class VehicleGenerator extends Thread {
 
   void generateVehicles(int node, float alpha, FloydData fd) {
     //function that receives the index of a node and generates the vehicles from it
-    
+
     List<int[][]> validPaths = new ArrayList();
-    for(int i=0; i<fd.table.length; i++){
-      if(i != node && fd.path[node][i] != -1){
-        int[][] t = {{i},get_path(fd, node, i)};
-         validPaths.add(t);
+    for (int i=0; i<fd.table.length; i++) {
+      if (i != node && fd.path[node][i] != -1) {
+        int[][] t = {{i}, get_path(fd, node, i)};
+        validPaths.add(t);
       }
     }
-    
-    if(alpha <= 0 || validPaths.size() == 0){
+
+    if (alpha <= 0 || validPaths.size() == 0) {
       return;
     }
 
@@ -133,7 +149,7 @@ class VehicleGenerator extends Thread {
         carListLock.lock();
         try {
           cars.add(new Car(node, fd, validPaths));
-           thread("moveCar");
+          thread("moveCar");
         }
         finally {
           carListLock.unlock();
@@ -160,6 +176,7 @@ float averageSpeed() {
 //CAR THREAD_____________________________________________________________________________________________________________________________
 int frameMillis = (int)(1.0/60.0 * 1000);
 ReentrantLock carListLock = new ReentrantLock();
+
 void moveCar() {
   int currCar = cars.size() - 1;
   Car car = cars.get(currCar);
@@ -187,7 +204,7 @@ void moveCar() {
         }
       }
     }
-    
+
     if (car.atEnd()) {
       car.stop();
       carListLock.lock();
@@ -204,16 +221,16 @@ void moveCar() {
     //println("moving... "+String.format("%.2f",car.getTravelledPercentage())+"%");
     delay(frameMillis); //Cars don't move each frame because they are a thread, so it needs tobe delayed to an arbitrary number of frames/second
   }
-  
+
   if (car != null && !inSimulation) {
-      car.stop();
-      carListLock.lock();
-      try {
-        cars.remove(car);
-      }
-      finally {
-        carListLock.unlock();
-      }
-      car = null;
+    car.stop();
+    carListLock.lock();
+    try {
+      cars.remove(car);
     }
+    finally {
+      carListLock.unlock();
+    }
+    car = null;
+  }
 }

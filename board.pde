@@ -128,14 +128,14 @@ class board {
         for (path p : path_ref) {
           paths.remove(p);
         }
-        
-         for (path p : paths) {
-            if (p.indiceNodo1 > index)
-              p.indiceNodo1 =  p.indiceNodo1-1;
-            if (p.indiceNodo2 > index)
-              p.indiceNodo2 =  p.indiceNodo2-1;
+
+        for (path p : paths) {
+          if (p.indiceNodo1 > index)
+            p.indiceNodo1 =  p.indiceNodo1-1;
+          if (p.indiceNodo2 > index)
+            p.indiceNodo2 =  p.indiceNodo2-1;
         }
-        
+
         nodes.remove(ref);
         for (int i =0; i < paths.size(); i++ ) {
           print(paths.get(i).indiceNodo1 + " "+ paths.get(i).indiceNodo2 +" " +paths.get(i).value + "\n" );
@@ -205,6 +205,8 @@ class board {
       inSimulation = !inSimulation;
       if (simulationOn)
         startSimulation();
+      else
+        cars.clear();
     }
     if (!simulationOn && mouseX>=50 && mouseX <=150 && mouseY>=52 && mouseY<=152) { //Select create tool
       currentTool = 1;
@@ -274,6 +276,23 @@ class board {
       setDistance();
     for (path p : paths)
       p.draw();
+    for (int i = cars.size()-1; i >= 0; i--) {
+      cars.get(i).getCoordinates();
+
+      PVector n1 = new PVector(cars.get(i).x_node1, cars.get(i).y_node1);
+      PVector n2 = new PVector(cars.get(i).x_node2, cars.get(i).y_node2);
+      PVector a = PVector.fromAngle(PVector.sub(n2, n1).heading());
+      a.rotate(-PI/2.0);
+      a.setMag(15);
+      n2 = PVector.sub(n2, n1);
+      n2.setMag(n2.mag()-40);
+      n2.add(n1);
+      PVector p = PVector.lerp( n1, n2, cars.get(i).getTravelledPercentage() );
+      //p.setMag(p.mag()-80);
+      p.add(a);
+      circle( p.x, p.y, 20);
+    }
+
     for (node node : nodes)
       node.draw();
   }

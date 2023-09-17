@@ -15,9 +15,9 @@ boolean inSimulation = false; // Set to true on "Start Simulation"
 List<ReentrantLock> nodesState;
 boolean allowMP = true;
 int n;
-float[] alphas; //meter creation rate
+float[] alphas; 
 
-int[][] baseTable; //aristas
+int[][] baseTable; 
 
 //Interface
 PImage img;
@@ -53,11 +53,13 @@ void setup() {
 void draw() {
   image(img, 0, 0, width, height);
   table.draw();
+
+  
 }
 
 void mousePressed() {
   table.mousePressed();
-  //print("x: " + mouseX + " y: " + mouseY + "\n");
+  print("x: " + mouseX + " y: " + mouseY + "\n");
 }
 
 
@@ -129,6 +131,7 @@ void startSimulation() {
     baseTable[paths.get(i).indiceNodo1][paths.get(i).indiceNodo2] = paths.get(i).value;
     baseTable[paths.get(i).indiceNodo2][paths.get(i).indiceNodo1] = paths.get(i).value;
   }
+  
   println("paths.size "+paths.size());
   printTable(baseTable);
   FloydData fd = floyd(baseTable);
