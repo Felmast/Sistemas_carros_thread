@@ -51,8 +51,8 @@ class Car {
     nextNode();
     getCoordinates();
 
-    println("Chosen Path: ");
-    printArray(path);
+    //println("Chosen Path: ");
+    //printArray(path);
   }
 
   void advance() {
@@ -71,7 +71,7 @@ class Car {
   void nextNode() {
     currNodeIndex++;
 
-    if (currNodeIndex+1 >= path.length || path[currNodeIndex] == -1 || path[currNodeIndex+1] == -1) {
+    if (currNodeIndex+1 >= path.length || currNodeIndex >= path.length || path[currNodeIndex] == -1 || path[currNodeIndex+1] == -1 ) {
       forceEnd();
       return;
     }
@@ -193,7 +193,7 @@ void moveCar() {
         ReentrantLock occupied = nodesState.get(car.getCurrentNode());
         occupied.lock();
         try {
-          println("I'm at node: " + car.getCurrentNode());
+          //println("I'm at node: " + car.getCurrentNode());
           delay(2000);
         }
         catch(Exception e) {

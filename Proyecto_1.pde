@@ -59,7 +59,6 @@ void draw() {
 
 void mousePressed() {
   table.mousePressed();
-  print("x: " + mouseX + " y: " + mouseY + "\n");
 }
 
 
@@ -106,14 +105,14 @@ void startSimulation() {
     nodesState.add(new ReentrantLock());
   }
 
-  print(nodes.size());
+ // print(nodes.size());
   //crear los alphas
   alphas = new float[nodes.size()];
   for(int i = 0; i< nodes.size(); i++){
     alphas[i] = nodes.get(i).creationRate;
   }
   
-  printArray(alphas);
+  //printArray(alphas);
   baseTable = new int[nodes.size()][nodes.size()];
   
   for(int i = 0; i<nodes.size(); i++){
@@ -123,23 +122,23 @@ void startSimulation() {
          baseTable[i][j] = 0;
     }
   }
-  println("paths.size "+paths.size());
+  //println("paths.size "+paths.size());
   for(int i = 0; i < paths.size(); i++){
-    println("i " + i);
-    println("paths.get(i).indiceNodo1 " + paths.get(i).indiceNodo1);
-    println("paths.get(i).indiceNodo2 " + paths.get(i).indiceNodo2);
+    //println("i " + i);
+    //println("paths.get(i).indiceNodo1 " + paths.get(i).indiceNodo1);
+    //println("paths.get(i).indiceNodo2 " + paths.get(i).indiceNodo2);
     baseTable[paths.get(i).indiceNodo1][paths.get(i).indiceNodo2] = paths.get(i).value;
     baseTable[paths.get(i).indiceNodo2][paths.get(i).indiceNodo1] = paths.get(i).value;
   }
   
-  println("paths.size "+paths.size());
-  printTable(baseTable);
+  //println("paths.size "+paths.size());
+  //printTable(baseTable);
   FloydData fd = floyd(baseTable);
   startTime = millis();
-  println("\nResult Table:");
-  printTable(fd.table);
-  println("\nPath:");
-  printTable(fd.path);
+  //println("\nResult Table:");
+  //printTable(fd.table);
+  //println("\nPath:");
+  //printTable(fd.path);
 
   //println("\n\nPath from 0 to 2:");
   //printArray(get_path(fd,0,2));

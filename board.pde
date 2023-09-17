@@ -137,9 +137,7 @@ class board {
         }
 
         nodes.remove(ref);
-        for (int i =0; i < paths.size(); i++ ) {
-          print(paths.get(i).indiceNodo1 + " "+ paths.get(i).indiceNodo2 +" " +paths.get(i).value + "\n" );
-        }
+
         action = 0;
         currentTool = 0;
         break;
@@ -225,7 +223,7 @@ class board {
     if (!simulationOn && mouseX>=50 && mouseX <=150 && mouseY>=355 && mouseY<=480) {
       complete = true;
       useTool();
-      print(mouseX +" "+ mouseY + "\n");
+      //print(mouseX +" "+ mouseY + "\n");
     }
 
     if (!simulationOn && mouseX>=151 && mouseX <=1200 && mouseY>=52 && mouseY<=803) { // use tool
@@ -265,7 +263,7 @@ class board {
     for (node node : nodes) {
       node.keyPressed();
     }
-    print(inputDistance+" ");
+    //print(inputDistance+" ");
   }
 
   ////////////////////////////////////
