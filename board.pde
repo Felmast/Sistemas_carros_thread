@@ -62,7 +62,7 @@ class board {
 
     long mins;
     long secs;
-    if(inSimulation){
+    if (inSimulation) {
       actualTimer = millis() - startTime;
       long time =  millis() - startTime;
       mins = time / 60000;
@@ -112,10 +112,34 @@ class board {
 
       case 2:
         node ref = null;
-        for (node node : nodes)
-          if (node.getNode() != null)
-            ref = node.getNode();
+        List<path> path_ref = new ArrayList<path>();
+        int index = -1;
+        for (int i =0; i < nodes.size(); i++ ) {
+          if (nodes.get(i).getNode() != null) {
+            ref = nodes.get(i).getNode();
+            index = i;
+          }
+        }
+        for (int i =0; i < paths.size(); i++ ) {
+          if (paths.get(i).getNode1() == index || paths.get(i).getNode2() == index ) {
+            path_ref.add(paths.get(i).getPath());
+          }
+        }
+        for (path p : path_ref) {
+          paths.remove(p);
+        }
+        
+         for (path p : paths) {
+            if (p.indiceNodo1 > index)
+              p.indiceNodo1 =  p.indiceNodo1-1;
+            if (p.indiceNodo2 > index)
+              p.indiceNodo2 =  p.indiceNodo2-1;
+        }
+        
         nodes.remove(ref);
+        for (int i =0; i < paths.size(); i++ ) {
+          print(paths.get(i).indiceNodo1 + " "+ paths.get(i).indiceNodo2 +" " +paths.get(i).value + "\n" );
+        }
         action = 0;
         currentTool = 0;
         break;
@@ -136,7 +160,7 @@ class board {
           for (int i =0; i < nodes.size(); i++ ) {
             node n = nodes.get(i);
             if (n.getNode() != null) {
-              p.setNode2(n.x, n.y,i);
+              p.setNode2(n.x, n.y, i);
               setDistance = true;
               action = 1;
             }
@@ -179,8 +203,8 @@ class board {
     if (mouseX>=950 && mouseX <=1200 && mouseY>=855 && mouseY<=955) {
       simulationOn = !simulationOn;
       inSimulation = !inSimulation;
-      if(simulationOn)
-       startSimulation();     
+      if (simulationOn)
+        startSimulation();
     }
     if (!simulationOn && mouseX>=50 && mouseX <=150 && mouseY>=52 && mouseY<=152) { //Select create tool
       currentTool = 1;

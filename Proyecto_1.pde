@@ -104,6 +104,7 @@ void startSimulation() {
     nodesState.add(new ReentrantLock());
   }
 
+  print(nodes.size());
   //crear los alphas
   alphas = new float[nodes.size()];
   for(int i = 0; i< nodes.size(); i++){
@@ -120,11 +121,15 @@ void startSimulation() {
          baseTable[i][j] = 0;
     }
   }
-  
-  for(int i = 0; i<paths.size(); i++){
+  println("paths.size "+paths.size());
+  for(int i = 0; i < paths.size(); i++){
+    println("i " + i);
+    println("paths.get(i).indiceNodo1 " + paths.get(i).indiceNodo1);
+    println("paths.get(i).indiceNodo2 " + paths.get(i).indiceNodo2);
     baseTable[paths.get(i).indiceNodo1][paths.get(i).indiceNodo2] = paths.get(i).value;
     baseTable[paths.get(i).indiceNodo2][paths.get(i).indiceNodo1] = paths.get(i).value;
   }
+  println("paths.size "+paths.size());
   printTable(baseTable);
   FloydData fd = floyd(baseTable);
   startTime = millis();
