@@ -15,9 +15,9 @@ boolean inSimulation = false; // Set to true on "Start Simulation"
 List<ReentrantLock> nodesState;
 boolean allowMP = true;
 int n;
-float[] alphas; 
+float[] alphas;
 
-int[][] baseTable; 
+int[][] baseTable;
 
 //Interface
 PImage img;
@@ -46,19 +46,19 @@ void setup() {
   paths = new ArrayList<path>();
   nodesState = new ArrayList();
   //EXAMPLE
-//  ejemploSimulacion();
+  //  ejemploSimulacion();
 }
 
 
 void draw() {
   image(img, 0, 0, width, height);
   table.draw();
-
-  
 }
 
 void mousePressed() {
   table.mousePressed();
+  for (path p : paths)
+    p.mousePressed();
 }
 
 
@@ -68,10 +68,14 @@ void mouseReleased() {
 
 void mouseMoved() {
   table.mouseMoved();
+  for (path p : paths)
+    p.mouseMoved();
 }
 
 void keyPressed() {
   table.keyPressed();
+  for (path p : paths)
+    p.keyPressed();
 }
 
 
@@ -105,32 +109,32 @@ void startSimulation() {
     nodesState.add(new ReentrantLock());
   }
 
- // print(nodes.size());
+  // print(nodes.size());
   //crear los alphas
   alphas = new float[nodes.size()];
-  for(int i = 0; i< nodes.size(); i++){
+  for (int i = 0; i< nodes.size(); i++) {
     alphas[i] = nodes.get(i).creationRate;
   }
-  
+
   //printArray(alphas);
   baseTable = new int[nodes.size()][nodes.size()];
-  
-  for(int i = 0; i<nodes.size(); i++){
-     for(int j = 0; j<nodes.size(); j++){
+
+  for (int i = 0; i<nodes.size(); i++) {
+    for (int j = 0; j<nodes.size(); j++) {
       baseTable[i][j] = 99999;
-      if(i == j)
-         baseTable[i][j] = 0;
+      if (i == j)
+        baseTable[i][j] = 0;
     }
   }
   //println("paths.size "+paths.size());
-  for(int i = 0; i < paths.size(); i++){
+  for (int i = 0; i < paths.size(); i++) {
     //println("i " + i);
     //println("paths.get(i).indiceNodo1 " + paths.get(i).indiceNodo1);
     //println("paths.get(i).indiceNodo2 " + paths.get(i).indiceNodo2);
     baseTable[paths.get(i).indiceNodo1][paths.get(i).indiceNodo2] = paths.get(i).value;
     baseTable[paths.get(i).indiceNodo2][paths.get(i).indiceNodo1] = paths.get(i).value;
   }
-  
+
   //println("paths.size "+paths.size());
   //printTable(baseTable);
   FloydData fd = floyd(baseTable);
@@ -145,11 +149,11 @@ void startSimulation() {
 
 
   inSimulation = true;
- // print("entrando");
+  // print("entrando");
   //por cada nodo generar carritos
   for (int i = 0; i < nodes.size(); i++) {
     VehicleGenerator node = new VehicleGenerator(i, alphas[i], fd);
-  //  print("entrando");
+    //  print("entrando");
     node.run();
   }
 }

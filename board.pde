@@ -8,6 +8,7 @@ class board {
   boolean mouseOnConnect = false;
   boolean setDistance = false;
   boolean complete = false;
+  boolean mouseOnAcceptConnect= false;
   String inputDistance = "";
   board() {
   }
@@ -189,11 +190,17 @@ class board {
     fill(255);
     strokeWeight(3);
     rect(x, y, 100, 100);
-    rect(x, y+25, 100, 100);
+    if (!mouseOnAcceptConnect) {
+      rect(x, y+25, 100, 100);
+    } else {
+      fill(#F0EBEB);
+      rect(x, y+25, 100, 100);
+    }
     strokeWeight(1);
     fill(0);
     text("Set distance ", x+5, y+20); //average speed
     text(inputDistance, x+25, y+70); //average speed
+    text("Click to save ", x+3, y+115); //average speed
     fill(255);
   }
 
@@ -220,10 +227,9 @@ class board {
       action = 3;
     }
 
-    if (!simulationOn && mouseX>=50 && mouseX <=150 && mouseY>=355 && mouseY<=480) {
+    if (!simulationOn && mouseX>=50 && mouseX <=150 && mouseY>=355 && mouseY<=480) { //Confirmation connect tool
       complete = true;
       useTool();
-      //print(mouseX +" "+ mouseY + "\n");
     }
 
     if (!simulationOn && mouseX>=151 && mouseX <=1200 && mouseY>=52 && mouseY<=803) { // use tool
@@ -252,6 +258,14 @@ class board {
       mouseOnConnect = true;
     else
       mouseOnConnect = false;
+
+    if (!simulationOn && mouseX>=50 && mouseX <=150 && mouseY>=355 && mouseY<=480)  //Confirmation connect tool
+      mouseOnAcceptConnect = true;
+    else
+      mouseOnAcceptConnect = false;
+
+    for (node node : nodes)
+      node.mouseMoved();
   }
 
 
@@ -290,6 +304,7 @@ class board {
       p.add(a);
       circle( p.x, p.y, 20);
     }
+
 
     for (node node : nodes)
       node.draw();

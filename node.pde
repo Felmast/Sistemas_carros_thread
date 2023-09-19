@@ -6,7 +6,7 @@ class node {
   boolean options;
   boolean setCreation;
   String input = "";
-
+  boolean mouseOn = false;
   node(int x, int y, int size) {
     this.x = x;
     this.y = y;
@@ -29,7 +29,7 @@ class node {
   }
 
   void mousePressed() {
-    if (mousePressed && (mouseButton == RIGHT)) {
+    if (!simulationOn && mousePressed && (mouseButton == RIGHT)) {
       if (mouseX>=x-size/2 && mouseX <=x+size/2 && mouseY>=y-size/2 && mouseY<=y+size/2) {
         if (setCreation) {
           setCreationRate();
@@ -37,6 +37,13 @@ class node {
         this.setCreation = !this.setCreation;
       }
     }
+  }
+
+  void mouseMoved() {
+    if (mouseX>=x-size/2 && mouseX <=x+size/2 && mouseY>=y-size/2 && mouseY<=y+size/2)
+      mouseOn = true;
+    else
+      mouseOn = false;
   }
 
   void keyPressed() {
@@ -60,6 +67,18 @@ class node {
       text(input, x-10, y+5);
     else
       text(creationRate + " ", x-10, y+5);
+
+    if (!simulationOn && mouseOn && !setCreation) {
+      fill(0);
+      text("Right click to edit", mouseX, mouseY);
+      fill(255);
+    }
+    if (!simulationOn && mouseOn && setCreation) {
+      fill(0);
+      text("Right click to save", mouseX, mouseY);
+      fill(255);
+    }
+
     fill(255); //Color black
   }
 }

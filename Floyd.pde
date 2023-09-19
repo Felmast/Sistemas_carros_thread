@@ -42,16 +42,16 @@ FloydData floyd(int[][] d0) {
 
 int[][][] pathsCache;
 int[] get_path(FloydData fd, int node1, int node2) {
-  if(pathsCache[node1][node2] != null){
+  if (pathsCache[node1][node2] != null) {
     return pathsCache[node1][node2];
   }
   int origNode2 = node2;
-  
-  if(fd.table.length == 1){
+
+  if (fd.table.length == 1) {
     int[] p = {0};
     return p;
   }
-  
+
   int[] path = new int[fd.table.length];
   int pos = fd.table.length-1;
   path[0] = -1;
@@ -74,7 +74,7 @@ int[] get_path(FloydData fd, int node1, int node2) {
   for (int i = pos; i < fd.table.length; i++) {
     newPath[c++] = path[i];
   }
-  
+
   pathsCache[node1][origNode2] = newPath;
   return newPath;
 }
